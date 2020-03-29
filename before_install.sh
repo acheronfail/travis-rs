@@ -9,7 +9,7 @@ fi
 sudo apt-get update
 
 # needed to build deb packages
-sudo apt-get install -y fakeroot
+sudo apt-get install -y fakeroot musl-gcc
 
 # needed for i686 linux gnu target
 if [[ $TARGET == i686-unknown-linux-gnu ]]; then
