@@ -1,4 +1,4 @@
-use clap::{Shell};
+use clap::Shell;
 use std::fs;
 use std::env;
 
