@@ -30,7 +30,7 @@ metadata() {
         return $?
     fi
 
-    echo "$result"
+    echo -n "$result"
 }
 
 pack() {
