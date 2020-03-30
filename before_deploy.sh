@@ -60,7 +60,7 @@ pack() {
     "${gcc_prefix}"strip "$tempdir/$package_name/$project_name"
 
     # manpage, readme and license
-    [ ! -z "doc/$project_name.1" ] && cp "doc/$project_name.1" "$tempdir/$package_name"
+    [ -f "doc/$project_name.1" ] && cp "doc/$project_name.1" "$tempdir/$package_name"
     cp README.md "$tempdir/$package_name"
     cp LICENSE-MIT "$tempdir/$package_name"
     cp LICENSE-APACHE "$tempdir/$package_name"
@@ -130,7 +130,7 @@ make_deb() {
     "${gcc_prefix}"strip "$tempdir/usr/bin/$project_name"
 
     # manpage
-    if [ ! -z "doc/$project_name.1" ]; then
+    if [ -f "doc/$project_name.1" ]; then
         install -Dm644 "doc/$project_name.1" "$tempdir/usr/share/man/man1/$project_name.1"
         gzip --best "$tempdir/usr/share/man/man1/$project_name.1"
     fi
