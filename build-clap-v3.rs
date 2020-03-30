@@ -16,7 +16,7 @@ fn main() {
   let outdir = env::var_os("OUT_DIR").expect("failed to find OUT_DIR");
   fs::create_dir_all(&outdir).expect("failed to create dirs for OUT_DIR");
 
-  let f = |name: &str| File::create(Path::new(&outdir).with_file_name(name)).unwrap();
+  let f = |name: &str| File::create(Path::new(&outdir).join(name)).unwrap();
 
   generate::<generators::Zsh, _>(&mut app, name, &mut f(&format!("_{}", name)));
   generate::<generators::Bash, _>(&mut app, name, &mut f(&format!("{}.bash", name)));
