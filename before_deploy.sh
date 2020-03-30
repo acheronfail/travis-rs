@@ -88,13 +88,13 @@ make_deb() {
     local dpkgname
     local conflictname
     local homepage
-    local maintainers
+    local maintainer
     local gcc_prefix
     local project_name
 
-    project_name="$(metadata name)"
-    homepage="$(metadata repository)"
-    maintainers="$(metadata authors)"
+    project_name="$(metadata 'name')"
+    homepage="$(metadata 'repository')"
+    maintainer="$(metadata 'authors[0]')"
 
     case $TARGET in
         x86_64*)
@@ -146,7 +146,7 @@ Upstream-Name: $project_name
 Source: $homepage
 
 Files: *
-Copyright: $maintainers
+Copyright: $maintainer
 License: Apache-2.0, MIT or UNLICENSE
 
 License: Apache-2.0
@@ -172,7 +172,7 @@ Package: $dpkgname
 Version: $version
 Section: utils
 Priority: optional
-Maintainer: $maintainers
+Maintainer: $maintainer
 Architecture: $architecture
 Provides: $project_name
 Depends: $(metadata "depends")
