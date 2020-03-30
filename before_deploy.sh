@@ -93,7 +93,7 @@ make_deb() {
     local project_name
 
     project_name="$(metadata name)"
-    homepage="$(metadata homepage)"
+    homepage="$(metadata repository)"
     maintainers="$(metadata authors)"
 
     case $TARGET in
