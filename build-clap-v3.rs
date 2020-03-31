@@ -6,7 +6,7 @@ use std::fs::{self, File};
 use std::path::Path;
 
 // This file must export a struct named `Args` with `#[derive(Clap)]`.
-include!("../src/cli.rs");
+include!("src/cli.rs");
 
 fn main() {
   let mut app = Args::into_app();
