@@ -1,6 +1,6 @@
 use clap::Shell;
-use std::fs;
 use std::env;
+use std::fs;
 
 // This file must export a function called `build_app`.
 include!("src/cli.rs");
