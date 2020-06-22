@@ -33,17 +33,31 @@ metadata() {
     echo -n "$result"
 }
 
+# Attempt to extract the name of the binary (if different to the project name).
+# The first [[bin]] entry found is used.
+# Pass the fallback value if no binary name is found.
+get_bin_name() {
+    name=$(metadata 'targets as $ts | $ts[].kind | index("bin") as $i | select($i) | $ts[$i].name' | head -1);
+    if [ -z "$name" ]; then
+        name="$1"
+    fi
+
+    echo $name
+}
+
 pack() {
     local tempdir
     local out_dir
     local project_name
+    local binary_name
     local package_name
     local gcc_prefix
 
     tempdir=$(mktemp -d 2>/dev/null || mktemp -d -t tmp)
     out_dir=$(pwd)
-    project_name=$(metadata name)
+    project_name=$(metadata 'name')
     package_name="$project_name-$TRAVIS_TAG-$TARGET"
+    binary_name=$(get_bin_name "$project_name")
 
     if [[ $TARGET == arm-unknown-linux-* ]]; then
         gcc_prefix="arm-linux-gnueabihf-"
@@ -56,11 +70,11 @@ pack() {
     mkdir "$tempdir/$package_name/autocomplete"
 
     # copying the main binary
-    cp "target/$TARGET/release/$project_name" "$tempdir/$package_name/"
-    "${gcc_prefix}"strip "$tempdir/$package_name/$project_name"
+    cp "target/$TARGET/release/$binary_name" "$tempdir/$package_name/"
+    "${gcc_prefix}"strip "$tempdir/$package_name/$binary_name"
 
     # manpage, readme and license
-    cp "doc/$project_name.1" "$tempdir/$package_name" || true
+    cp "doc/$binary_name.1" "$tempdir/$package_name" || true
     cp README.md "$tempdir/$package_name"
     cp ci/LICENSE-MIT "$tempdir/$package_name"
     cp ci/LICENSE-APACHE "$tempdir/$package_name"
@@ -93,6 +107,7 @@ make_deb() {
     local project_name
 
     project_name="$(metadata 'name')"
+    binary_name=$(get_bin_name "$project_name")
     homepage="$(metadata 'repository')"
     maintainer="$(metadata 'authors[0]')"
 
@@ -126,13 +141,13 @@ make_deb() {
     tempdir=$(mktemp -d 2>/dev/null || mktemp -d -t tmp)
 
     # copy the main binary
-    install -Dm755 "target/$TARGET/release/$project_name" "$tempdir/usr/bin/$project_name"
-    "${gcc_prefix}"strip "$tempdir/usr/bin/$project_name"
+    install -Dm755 "target/$TARGET/release/$binary_name" "$tempdir/usr/bin/$binary_name"
+    "${gcc_prefix}"strip "$tempdir/usr/bin/$binary_name"
 
     # manpage
-    if [ -f "doc/$project_name.1" ]; then
-        install -Dm644 "doc/$project_name.1" "$tempdir/usr/share/man/man1/$project_name.1"
-        gzip --best "$tempdir/usr/share/man/man1/$project_name.1"
+    if [ -f "doc/$binary_name.1" ]; then
+        install -Dm644 "doc/$binary_name.1" "$tempdir/usr/share/man/man1/$binary_name.1"
+        gzip --best "$tempdir/usr/share/man/man1/$binary_name.1"
     fi
 
     # readme and license
